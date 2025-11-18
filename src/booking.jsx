@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Car, MapPin, Clock, Phone, User, Navigation, CheckCircle } from 'lucide-react';
+import { Car, MapPin, Clock, Phone, User, Navigation, CheckCircle, Truck, Users, Globe2, Globe, Mail } from 'lucide-react';
 
 export default function TaxiBooking() {
   const [formData, setFormData] = useState({
@@ -7,16 +7,50 @@ export default function TaxiBooking() {
     contact: '',
     pickup: '',
     dropoff: '',
-    time: ''
+    time: '',
+    vehicleType: 'sedan',
+    tripType: 'oneway',
+    distance: ''
   });
   const [submitted, setSubmitted] = useState(false);
+
+  const vehicles = {
+    sedan: {
+      name: 'Sedan',
+      capacity: 'Normal Car',
+      oneway: 14,
+      twoway: 13,
+      icon: Car
+    },
+    suv: {
+      name: 'SUV',
+      capacity: '7 Seater',
+      oneway: 19,
+      twoway: 18,
+      icon: Users
+    },
+    tempo: {
+      name: 'Tempo',
+      capacity: '12 + 1',
+      oneway: 23,
+      twoway: 23,
+      icon: Truck
+    },
+    innova: {
+      name: 'Innova',
+      capacity: '7 Seater',
+      oneway: 19,
+      twoway: 18,
+      icon: Users
+    }
+  };
 
   const handleSubmit = () => {
     if (formData.name && formData.contact && formData.pickup && formData.dropoff && formData.time) {
       setSubmitted(true);
       setTimeout(() => {
         setSubmitted(false);
-        setFormData({ name: '', contact: '', pickup: '', dropoff: '', time: '' });
+        setFormData({ name: '', contact: '', pickup: '', dropoff: '', time: '', vehicleType: 'sedan', tripType: 'oneway', distance: '' });
       }, 3000);
     }
   };
@@ -25,7 +59,21 @@ export default function TaxiBooking() {
     setFormData({ ...formData, [field]: value });
   };
 
+  const getPrice = () => {
+    const vehicle = vehicles[formData.vehicleType];
+    const price = formData.tripType === 'oneway' ? vehicle.oneway : vehicle.twoway;
+    return price;
+  };
+
+  const openGoogleMaps = () => {
+    if (formData.pickup && formData.dropoff) {
+      const mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(formData.pickup)}&destination=${encodeURIComponent(formData.dropoff)}`;
+      window.open(mapsUrl, '_blank');
+    }
+  };
+
   return (
+    <>
     <div className="min-h-screen bg-gradient-to-br from-red-50 via-yellow-50 to-red-50">
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-r from-red-600 to-yellow-500 text-white">
@@ -43,7 +91,7 @@ export default function TaxiBooking() {
             </div>
             
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 tracking-tight">
-              Ride in <span className="text-yellow-300">Style</span>
+              <span className="text-yellow-300">Helloonewaytaxi.in</span>
             </h1>
             <p className="text-lg sm:text-xl md:text-2xl mb-6 text-red-100 max-w-2xl mx-auto">
               Your premium taxi service for a comfortable journey
@@ -56,7 +104,7 @@ export default function TaxiBooking() {
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
                 <MapPin className="w-5 h-5" />
-                <span>Anywhere</span>
+                <span>TN, KA, KL, PY</span>
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
                 <CheckCircle className="w-5 h-5" />
@@ -97,6 +145,71 @@ export default function TaxiBooking() {
           </div>
 
           <div className="p-6 sm:p-8 md:p-10 space-y-6">
+            {/* Vehicle Type Selection */}
+            <div className="group">
+              <label className="flex items-center gap-2 text-gray-700 font-semibold mb-3">
+                <Car className="w-5 h-5 text-red-500" />
+                Select Vehicle Type
+              </label>
+              <div className="grid grid-cols-4 sm:grid-cols-4 gap-2 sm:gap-3">
+                {Object.entries(vehicles).map(([key, vehicle]) => {
+                  const IconComponent = vehicle.icon;
+                  return (
+                    <button
+                      key={key}
+                      onClick={() => handleChange('vehicleType', key)}
+                      className={`p-2 sm:p-3 rounded-lg border-2 font-semibold transition-all duration-300 flex flex-col items-center gap-1 sm:gap-2 text-xs sm:text-sm ${
+                        formData.vehicleType === key
+                          ? 'border-red-500 bg-red-50 text-red-700'
+                          : 'border-gray-200 bg-white text-gray-700 hover:border-red-300'
+                      }`}
+                    >
+                      <IconComponent className={`w-8 h-8 sm:w-10 sm:h-10 ${formData.vehicleType === key ? 'text-red-500' : 'text-gray-500'}`} />
+                      <div className="text-center">
+                        <p className="font-bold">{vehicle.name}</p>
+                        <p className="text-xs opacity-75 mb-1">{vehicle.capacity}</p>
+                        <p className="text-xs sm:text-xs opacity-75">
+                          ₹{formData.tripType === 'oneway' ? vehicle.oneway : vehicle.twoway}/km
+                        </p>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Trip Type Selection */}
+            <div className="group">
+              <label className="flex items-center gap-2 text-gray-700 font-semibold mb-3">
+                <Navigation className="w-5 h-5 text-yellow-500" />
+                Trip Type
+              </label>
+              <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                <button
+                  onClick={() => handleChange('tripType', 'oneway')}
+                  className={`p-2 sm:p-3 rounded-lg border-2 font-semibold transition-all duration-300 flex flex-col items-center gap-1 sm:gap-2 text-xs sm:text-sm ${
+                    formData.tripType === 'oneway'
+                      ? 'border-yellow-500 bg-yellow-50 text-yellow-700'
+                      : 'border-gray-200 bg-white text-gray-700 hover:border-yellow-300'
+                  }`}
+                >
+                  <Navigation className="w-5 h-5 sm:w-6 sm:h-6" />
+                  One Way
+                </button>
+                <button
+                  onClick={() => handleChange('tripType', 'twoway')}
+                  className={`p-2 sm:p-3 rounded-lg border-2 font-semibold transition-all duration-300 flex flex-col items-center gap-1 sm:gap-2 text-xs sm:text-sm ${
+                    formData.tripType === 'twoway'
+                      ? 'border-yellow-500 bg-yellow-50 text-yellow-700'
+                      : 'border-gray-200 bg-white text-gray-700 hover:border-yellow-300'
+                  }`}
+                >
+                  <Navigation className="w-5 h-5 sm:w-6 sm:h-6 rotate-180" />
+                  Round Trip
+                </button>
+              </div>
+            </div>
+
             {/* Name Field */}
             <div className="group">
               <label className="flex items-center gap-2 text-gray-700 font-semibold mb-2">
@@ -127,20 +240,28 @@ export default function TaxiBooking() {
               />
             </div>
 
-            {/* Location Fields */}
-            <div className="grid sm:grid-cols-2 gap-6">
+            {/* Location Fields with Pin Drop */}
+            <div className="space-y-4">
               <div className="group">
                 <label className="flex items-center gap-2 text-gray-700 font-semibold mb-2">
                   <MapPin className="w-5 h-5 text-red-500" />
                   Pickup Location
                 </label>
-                <input
-                  type="text"
-                  value={formData.pickup}
-                  onChange={(e) => handleChange('pickup', e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-red-500 focus:ring-2 focus:ring-yellow-200 outline-none transition-all duration-300"
-                  placeholder="From where?"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={formData.pickup}
+                    onChange={(e) => handleChange('pickup', e.target.value)}
+                    className="w-full px-4 py-3 pr-12 border-2 border-gray-200 rounded-xl focus:border-red-500 focus:ring-2 focus:ring-yellow-200 outline-none transition-all duration-300"
+                    placeholder="Add pickup location"
+                  />
+                  <button
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 hover:text-red-700 transition-colors"
+                    title="Pin location"
+                  >
+                    <MapPin className="w-6 h-6" />
+                  </button>
+                </div>
               </div>
 
               <div className="group">
@@ -148,15 +269,40 @@ export default function TaxiBooking() {
                   <Navigation className="w-5 h-5 text-yellow-500" />
                   Drop Location
                 </label>
-                <input
-                  type="text"
-                  value={formData.dropoff}
-                  onChange={(e) => handleChange('dropoff', e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-yellow-500 focus:ring-2 focus:ring-red-200 outline-none transition-all duration-300"
-                  placeholder="To where?"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={formData.dropoff}
+                    onChange={(e) => handleChange('dropoff', e.target.value)}
+                    className="w-full px-4 py-3 pr-12 border-2 border-gray-200 rounded-xl focus:border-yellow-500 focus:ring-2 focus:ring-red-200 outline-none transition-all duration-300"
+                    placeholder="Add drop location"
+                  />
+                  <button
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-yellow-500 hover:text-yellow-700 transition-colors"
+                    title="Pin location"
+                  >
+                    <MapPin className="w-6 h-6" />
+                  </button>
+                </div>
               </div>
             </div>
+
+            {/* Distance Display */}
+            {formData.pickup && formData.dropoff && (
+              <div className="bg-blue-50 p-4 rounded-lg border-2 border-blue-300">
+                <label className="flex items-center gap-2 text-gray-700 font-semibold mb-2">
+                  <Navigation className="w-5 h-5 text-blue-500" />
+                  Total Distance (KM)
+                </label>
+                <input
+                  type="number"
+                  value={formData.distance}
+                  onChange={(e) => handleChange('distance', e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-blue-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-300"
+                  placeholder="Enter distance in kilometers"
+                />
+              </div>
+            )}
 
             {/* Time Field */}
             <div className="group">
@@ -221,6 +367,33 @@ export default function TaxiBooking() {
         </div>
       </div>
 
+
+      <div className="grid sm:grid-cols-3 gap-6 mt-12">
+          <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 text-center">
+            <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-yellow-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Phone className="w-8 h-8 text-white" />
+            </div>
+            <h3 className="font-bold text-gray-800 mb-2">Contact Number</h3>
+            <p className="text-gray-600 text-sm">+91 7358160847</p>
+          </div>
+
+          <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 text-center">
+            <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Globe className="w-8 h-8 text-white" />
+            </div>
+            <h3 className="font-bold text-gray-800 mb-2">Support Mail</h3>
+            <p className="text-gray-600 text-sm">helloonewaytaxidesk@gmail.com</p>
+          </div>
+
+          <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 text-center">
+            <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-yellow-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Mail className="w-8 h-8 text-white" />
+            </div>
+            <h3 className="font-bold text-gray-800 mb-2">Visit Us</h3>
+            <p className="text-gray-600 text-sm">Chennai</p>
+          </div>
+        </div>
+
       <style jsx>{`
         @keyframes fade-in {
           from {
@@ -237,5 +410,6 @@ export default function TaxiBooking() {
         }
       `}</style>
     </div>
+    </>
   );
 }
