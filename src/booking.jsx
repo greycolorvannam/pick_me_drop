@@ -151,24 +151,24 @@ export default function TaxiBooking() {
                 <Car className="w-5 h-5 text-red-500" />
                 Select Vehicle Type
               </label>
-              <div className="grid grid-cols-4 sm:grid-cols-4 gap-2 sm:gap-3">
+              <div className="flex overflow-x-auto gap-3 pb-2 snap-x snap-mandatory scrollbar-hide sm:grid sm:grid-cols-4 sm:overflow-visible">
                 {Object.entries(vehicles).map(([key, vehicle]) => {
                   const IconComponent = vehicle.icon;
                   return (
                     <button
                       key={key}
                       onClick={() => handleChange('vehicleType', key)}
-                      className={`p-2 sm:p-3 rounded-lg border-2 font-semibold transition-all duration-300 flex flex-col items-center gap-1 sm:gap-2 text-xs sm:text-sm ${
+                      className={`flex-shrink-0 w-32 sm:w-auto p-3 rounded-lg border-2 font-semibold transition-all duration-300 flex flex-col items-center gap-2 text-xs sm:text-sm snap-center ${
                         formData.vehicleType === key
                           ? 'border-red-500 bg-red-50 text-red-700'
                           : 'border-gray-200 bg-white text-gray-700 hover:border-red-300'
                       }`}
                     >
-                      <IconComponent className={`w-8 h-8 sm:w-10 sm:h-10 ${formData.vehicleType === key ? 'text-red-500' : 'text-gray-500'}`} />
+                      <IconComponent className={`w-10 h-10 ${formData.vehicleType === key ? 'text-red-500' : 'text-gray-500'}`} />
                       <div className="text-center">
                         <p className="font-bold">{vehicle.name}</p>
                         <p className="text-xs opacity-75 mb-1">{vehicle.capacity}</p>
-                        <p className="text-xs sm:text-xs opacity-75">
+                        <p className="text-xs opacity-75">
                           ₹{formData.tripType === 'oneway' ? vehicle.oneway : vehicle.twoway}/km
                         </p>
                       </div>
@@ -367,8 +367,9 @@ export default function TaxiBooking() {
         </div>
       </div>
 
-
-      <div className="grid sm:grid-cols-3 gap-6 mt-12">
+      {/* Contact Section */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+        <div className="grid sm:grid-cols-3 gap-6">
           <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 text-center">
             <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-yellow-500 rounded-full flex items-center justify-center mx-auto mb-4">
               <Phone className="w-8 h-8 text-white" />
@@ -393,6 +394,7 @@ export default function TaxiBooking() {
             <p className="text-gray-600 text-sm">Chennai</p>
           </div>
         </div>
+      </div>
 
       <style jsx>{`
         @keyframes fade-in {
@@ -407,6 +409,13 @@ export default function TaxiBooking() {
         }
         .animate-fade-in {
           animation: fade-in 0.6s ease-out;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
         }
       `}</style>
     </div>
