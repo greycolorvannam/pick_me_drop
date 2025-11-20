@@ -135,7 +135,7 @@ export default function TaxiBooking() {
               
               <a href="tel:+918904094174" className="inline-block mb-8">
                 <button className="bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold py-4 px-8 rounded-full transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105">
-                  Call for Quote: +91 735816087
+                  Call for Quote: +91 7010515725
                 </button>
               </a>
 
@@ -224,7 +224,7 @@ export default function TaxiBooking() {
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 outline-none transition-all duration-300"
                   >
                     <option value="oneway" style={{color:"black"}}>One Way</option>
-                    <option value="twoway" style={{color:"black"}}>Round Trip</option>
+                    <option value="roundtrip" style={{color:"black"}}>Round Trip</option>
                   </select>
                 </div>
 
@@ -517,7 +517,7 @@ export default function TaxiBooking() {
                 <div className="flex gap-3">
                   <Phone className="w-5 h-5 text-yellow-300 flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-semibold text-white">7358160847</p>
+                    <p className="font-semibold text-white">7010515725</p>
                     <p className="text-xs text-red-100">24/7 Booking</p>
                   </div>
                 </div>
@@ -549,7 +549,7 @@ export default function TaxiBooking() {
           {/* Footer Bottom */}
           <div className="border-t border-red-500 pt-8">
             <div className="flex flex-col sm:flex-row justify-between items-center text-xs text-red-100">
-              <p>&copy; 2024 Drops One Way Taxi. All rights reserved.</p>
+              {/* <p>&copy; 2024 Drops One Way Taxi. All rights reserved.</p> */}
               <div className="flex gap-6 mt-4 sm:mt-0">
                 <a href="#" className="hover:text-yellow-300 transition-colors">Privacy Policy</a>
                 <a href="#" className="hover:text-yellow-300 transition-colors">Terms of Service</a>
