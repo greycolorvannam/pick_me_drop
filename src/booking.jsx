@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Car, MapPin, Clock, Phone, User, Navigation, CheckCircle, Truck, Users, Globe, Mail } from 'lucide-react';
+import emailjs from '@emailjs/browser';
+
 
 export default function TaxiBooking() {
   const [formData, setFormData] = useState({
@@ -29,6 +31,14 @@ export default function TaxiBooking() {
       twoway: 18,
       icon: Users
     },
+    
+    innova: {
+      name: 'Innova',
+      capacity: '7 Seater',
+      oneway: 19,
+      twoway: 18,
+      icon: Users
+    },
     tempo: {
       name: 'Tempo',
       capacity: '12 + 1',
@@ -36,24 +46,60 @@ export default function TaxiBooking() {
       twoway: 23,
       icon: Truck
     },
-    innova: {
-      name: 'Innova',
-      capacity: '7 Seater',
-      oneway: 19,
-      twoway: 18,
-      icon: Users
-    }
   };
 
   const handleSubmit = () => {
-    if (formData.name && formData.contact && formData.pickup && formData.dropoff && formData.time) {
-      setSubmitted(true);
-      setTimeout(() => {
-        setSubmitted(false);
-        setFormData({ name: '', contact: '', pickup: '', dropoff: '', time: '', vehicleType: 'sedan', tripType: 'oneway', distance: '' });
-      }, 3000);
-    }
-  };
+  if (formData.name && formData.contact && formData.pickup && formData.dropoff && formData.time) {
+    
+    const templateParams = {
+      name: formData.name,
+      contact: formData.contact,
+      pickup: formData.pickup,
+      dropoff: formData.dropoff,
+      date: formData.time,
+      vehicle: formData.vehicleType,
+      tripType: formData.tripType
+    };
+
+    emailjs.send(
+      'service_6lhrnze',
+      'template_4ohb6uv',
+      templateParams,
+      'q_eYLA_Xyr8MJ7GXO'
+    )
+    .then(() => {
+        setSubmitted(true);
+        setTimeout(() => {
+          setSubmitted(false);
+          setFormData({
+            name: '',
+            contact: '',
+            pickup: '',
+            dropoff: '',
+            time: '',
+            vehicleType: 'sedan',
+            tripType: 'oneway',
+            distance: ''
+          });
+        }, 3000);
+    })
+    .catch((error) => {
+      console.error("EmailJS Error:", error);
+      alert("Failed to send booking. Please try again.");
+    });
+  }
+};
+
+
+  // const handleSubmit = () => {
+  //   if (formData.name && formData.contact && formData.pickup && formData.dropoff && formData.time) {
+  //     setSubmitted(true);
+  //     setTimeout(() => {
+  //       setSubmitted(false);
+  //       setFormData({ name: '', contact: '', pickup: '', dropoff: '', time: '', vehicleType: 'sedan', tripType: 'oneway', distance: '' });
+  //     }, 3000);
+  //   }
+  // };
 
   const handleChange = (field, value) => {
     setFormData({ ...formData, [field]: value });
@@ -79,7 +125,7 @@ export default function TaxiBooking() {
               </div>
               
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 tracking-tight">
-                Reliable One-Way<br />& Round Trip<br />
+               helloonewaytaxi <br />
                 <span className="text-yellow-300">Taxi Service</span>
               </h1>
               
@@ -89,7 +135,7 @@ export default function TaxiBooking() {
               
               <a href="tel:+918904094174" className="inline-block mb-8">
                 <button className="bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold py-4 px-8 rounded-full transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105">
-                  Call for Quote: +91 89040 94174
+                  Call for Quote: +91 735816087
                 </button>
               </a>
 
@@ -118,20 +164,7 @@ export default function TaxiBooking() {
               </div>
               
               <div className="bg-white rounded-b-3xl shadow-2xl p-6 space-y-4">
-                {/* Name Input */}
-                <div>
-                  <label className="flex items-center gap-2 text-gray-700 font-semibold mb-2 text-sm">
-                    <User className="w-4 h-4 text-red-500" />
-                    Name *
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => handleChange('name', e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-200 outline-none transition-all duration-300"
-                    placeholder="Enter your name"
-                  />
-                </div>
+               
 
                 {/* Vehicle Selection */}
                 <div>
@@ -163,18 +196,35 @@ export default function TaxiBooking() {
                   </div>
                 </div>
 
+                 {/* Name Input */}
+                <div>
+                  <label className="flex items-center gap-2 text-gray-700 font-semibold mb-2 text-sm">
+                    <User className="w-4 h-4 text-red-500" />
+                    Name *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => handleChange('name', e.target.value)}
+                    style={{color:"black"}}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-200 outline-none transition-all duration-300"
+                    placeholder="Enter your name"
+                  />
+                </div>
+
                 {/* Trip Type Dropdown */}
                 <div>
                   <label className="block text-gray-700 font-semibold mb-2 text-sm">
                     Trip Type *
                   </label>
                   <select
+                  style={{color:"black"}}
                     value={formData.tripType}
                     onChange={(e) => handleChange('tripType', e.target.value)}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 outline-none transition-all duration-300"
                   >
-                    <option value="oneway">One Way</option>
-                    <option value="twoway">Round Trip</option>
+                    <option value="oneway" style={{color:"black"}}>One Way</option>
+                    <option value="twoway" style={{color:"black"}}>Round Trip</option>
                   </select>
                 </div>
 
@@ -186,6 +236,7 @@ export default function TaxiBooking() {
                   </label>
                   <input
                     type="text"
+                    style={{color:"black"}}
                     value={formData.pickup}
                     onChange={(e) => handleChange('pickup', e.target.value)}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-200 outline-none transition-all duration-300"
@@ -201,6 +252,7 @@ export default function TaxiBooking() {
                   </label>
                   <input
                     type="text"
+                    style={{color:"black"}}
                     value={formData.dropoff}
                     onChange={(e) => handleChange('dropoff', e.target.value)}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 outline-none transition-all duration-300"
@@ -216,6 +268,7 @@ export default function TaxiBooking() {
                   </label>
                   <input
                     type="tel"
+                    style={{color:"black"}}
                     value={formData.contact}
                     onChange={(e) => handleChange('contact', e.target.value)}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-200 outline-none transition-all duration-300"
@@ -231,6 +284,7 @@ export default function TaxiBooking() {
                   </label>
                   <input
                     type="date"
+                    style={{color:"black"}}
                     value={formData.time}
                     onChange={(e) => handleChange('time', e.target.value)}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 outline-none transition-all duration-300"
@@ -245,6 +299,7 @@ export default function TaxiBooking() {
                   </label>
                   <input
                     type="time"
+                    style={{color:"black"}}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-200 outline-none transition-all duration-300"
                   />
                 </div>
@@ -307,19 +362,126 @@ export default function TaxiBooking() {
         </div>
       </div>
 
+      {/* Service Coverage Section */}
+      <div className="bg-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left Content */}
+            <div>
+              <div className="inline-block px-4 py-2 bg-red-100 rounded-full mb-4">
+                <span className="text-red-600 font-bold text-sm">TRUSTED SERVICE</span>
+              </div>
+              
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+                Wide Coverage with <span className="text-red-600">200+ Professional</span> Drivers
+              </h2>
+              
+              <p className="text-gray-600 text-lg mb-8 leading-relaxed">
+                We serve major cities across Karnataka and Tamil Nadu with our extensive network of verified, professional drivers ensuring you get reliable service wherever you need to go. We also provide government and private taxi services
+              </p>
+
+              {/* Stats */}
+              <div className="grid grid-cols-2 gap-6 mb-8">
+                <div className="bg-gradient-to-br from-red-50 to-yellow-50 p-6 rounded-xl border-2 border-red-200">
+                  <div className="flex items-center gap-3 mb-2">
+                    <Users className="w-8 h-8 text-red-600" />
+                    <div className="text-3xl font-bold text-red-600">200+</div>
+                  </div>
+                  <p className="text-gray-700 font-semibold">Professional Drivers</p>
+                </div>
+                
+                <div className="bg-gradient-to-br from-yellow-50 to-red-50 p-6 rounded-xl border-2 border-yellow-400">
+                  <div className="flex items-center gap-3 mb-2">
+                    <MapPin className="w-8 h-8 text-yellow-600" />
+                    <div className="text-3xl font-bold text-yellow-600">50+</div>
+                  </div>
+                  <p className="text-gray-700 font-semibold">Cities Covered</p>
+                </div>
+              </div>
+
+              {/* Key Locations */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Major Service Locations:</h3>
+                <div className="grid grid-cols-2 gap-3">
+                  {['TamilNadu', 'Karnataka', 'Kerala', 'Pondicherry'].map((city) => (
+                    <div key={city} className="flex items-center gap-2 bg-gray-50 px-4 py-3 rounded-lg border border-gray-200">
+                      <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                      <span className="text-gray-700 font-medium">{city}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Right Image */}
+            <div className="relative">
+              <div className="absolute -inset-4 bg-gradient-to-br from-red-400 to-yellow-400 rounded-2xl opacity-20 blur-xl"></div>
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+                <img 
+                  src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=800" 
+                  alt="Professional taxi drivers" 
+                  className="w-full h-[500px] object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                  <p className="text-2xl font-bold mb-2">Experienced & Verified Drivers</p>
+                  <p className="text-sm text-gray-200">Background verified • Professional training • 24/7 support</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Features Section */}
+      <div className="bg-gradient-to-br from-red-50 via-yellow-50 to-red-50 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Why Choose Us?</h2>
+            <p className="text-gray-600 text-lg">Experience the difference with our premium taxi service</p>
+          </div>
+          
+          <div className="grid sm:grid-cols-3 gap-8">
+            <div className="text-center bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+              <div className="w-20 h-20 bg-gradient-to-br from-red-500 to-yellow-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Clock className="w-10 h-10 text-white" />
+              </div>
+              <h3 className="font-bold text-gray-800 mb-2 text-lg">Quick Response</h3>
+              <p className="text-gray-600">Get a ride within minutes of your booking request</p>
+            </div>
+
+            <div className="text-center bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+              <div className="w-20 h-20 bg-gradient-to-br from-yellow-500 to-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Car className="w-10 h-10 text-white" />
+              </div>
+              <h3 className="font-bold text-gray-800 mb-2 text-lg">Clean Vehicles</h3>
+              <p className="text-gray-600">Well-maintained fleet with regular servicing</p>
+            </div>
+
+            <div className="text-center bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+              <div className="w-20 h-20 bg-gradient-to-br from-red-500 to-yellow-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="w-10 h-10 text-white" />
+              </div>
+              <h3 className="font-bold text-gray-800 mb-2 text-lg">Safe Journey</h3>
+              <p className="text-gray-600">Experienced drivers ensuring your safety</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Footer */}
       <footer className="bg-gradient-to-r from-red-600 to-red-700 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
             {/* Column 1 - Brand */}
             <div>
-              <h3 className="text-yellow-300 font-bold text-lg mb-4">Drops One Way Taxi</h3>
+              <h3 className="text-yellow-300 font-bold text-lg mb-4">helloonewaytaxi.in</h3>
               <p className="text-sm leading-relaxed mb-4 text-red-100">
                 Your trusted partner for reliable and affordable taxi services across Karnataka and Select Tamil Nadu Cities. Professional drivers, well-maintained vehicles, transparent pricing.
               </p>
               <a href="https://dropsonewaytaxi.in" className="text-yellow-300 hover:text-yellow-200 text-sm flex items-center gap-2 transition-colors">
                 <Globe className="w-4 h-4" />
-                dropsonewaytaxi.in
+                helloonewaytaxi.in
               </a>
             </div>
 
@@ -332,6 +494,7 @@ export default function TaxiBooking() {
                 <li><a href="#" className="hover:text-yellow-300 transition-colors">Corporate Travel</a></li>
                 <li><a href="#" className="hover:text-yellow-300 transition-colors">Airport Transfers</a></li>
                 <li><a href="#" className="hover:text-yellow-300 transition-colors">Outstation Cabs</a></li>
+                <li><a href="#" className="hover:text-yellow-300 transition-colors">Government Services</a></li>
               </ul>
             </div>
 
@@ -354,14 +517,14 @@ export default function TaxiBooking() {
                 <div className="flex gap-3">
                   <Phone className="w-5 h-5 text-yellow-300 flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-semibold text-white">8904094174</p>
+                    <p className="font-semibold text-white">7358160847</p>
                     <p className="text-xs text-red-100">24/7 Booking</p>
                   </div>
                 </div>
                 <div className="flex gap-3">
                   <Mail className="w-5 h-5 text-yellow-300 flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-semibold text-white">dropsonewaytaxi@gmail.com</p>
+                    <p className="font-semibold text-white">helloonewaytaxi@gmail.com</p>
                     <p className="text-xs text-red-100">Customer Support</p>
                   </div>
                 </div>
@@ -373,11 +536,11 @@ export default function TaxiBooking() {
                   </div>
                 </div>
                 <div className="flex gap-3">
-                  <Navigation className="w-5 h-5 text-yellow-300 flex-shrink-0 mt-0.5" />
+                  {/* <Navigation className="w-5 h-5 text-yellow-300 flex-shrink-0 mt-0.5" />
                   <div>
                     <p className="font-semibold text-white">Karnataka & Tamil Nadu</p>
                     <p className="text-xs text-red-100">Service Areas</p>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
